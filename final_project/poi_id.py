@@ -11,7 +11,7 @@ from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
 from data_exploration import initial_data_exploration, plot_data_exploration, \
         find_oulier, find_person_missing_features
-
+from feature_creation import create_feature
 
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
@@ -80,8 +80,21 @@ for key in ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']:
 
 
 ### Task 3: Create new feature(s)
+
+# Untag to create two new features "fraction_from_poi" and "fraction_to_poi"
+# "fraction_from_poi" is "from_poi_to_this_person"/"from_messages"
+# "fraction_to_poi" is "from_this_person_to_poi"/"to_messages"      
+create_feature(data_dict)
+
+# Update "fraction_from_poi" and "fraction_to_poi" to this list
+all_features_list += ["fraction_from_poi", "fraction_to_poi"]
+
+
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
+
+
+
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
