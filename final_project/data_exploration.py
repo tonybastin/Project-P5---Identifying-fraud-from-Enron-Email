@@ -1,7 +1,7 @@
 # Data set exploration
 from matplotlib import pyplot as plt
 
-# Section 1 - General function to print out names, POI's and their numbers
+# General function to print out names, POI's and their numbers
 def initial_data_exploration(data_dict):
 
     # Number of persons and their names
@@ -32,7 +32,7 @@ def initial_data_exploration(data_dict):
     return None
 
 
-# Section 2 
+# Make plots 
 def plot_data_exploration(data_dict, x_label , y_label):
     
     for name, value in data_dict.items() :
@@ -48,8 +48,7 @@ def plot_data_exploration(data_dict, x_label , y_label):
     plt.show()
             
     
-# Checking for o
-
+# Check for outliers
 def find_oulier(data_dict, feature, feature_value):
     
     outlier_names = []

@@ -40,3 +40,24 @@ def create_feature(data_dict):
         data_point["fraction_to_poi"] = fraction_to_poi
     
     return None
+
+def best_features(data_dict, features_list, k):
+    """ select best "k" features from "features_list" 
+        returns dict where keys=features, values=scores
+    """
+    from feature_format import featureFormat, targetFeatureSplit
+    from sklearn.feature_selection import SelectKBest
+    
+    data = featureFormat(data_dict, features_list)
+    labels, features = targetFeatureSplit(data)
+
+    k_best = SelectKBest(k=10)
+    k_best.fit(features, labels)
+    scores = k_best.scores_
+    unsorted_pairs = zip(features_list[1:], scores)
+    sorted_pairs = list(reversed(sorted(unsorted_pairs, key=lambda x: x[1])))
+    best_k_features = dict(sorted_pairs[:k])
+    print ("Best {} features and their scores:  ".format(k))
+    for feature,value in best_k_features.items():
+        print("{} : {}".format(feature, round(value,2)))    
+    return best_k_features

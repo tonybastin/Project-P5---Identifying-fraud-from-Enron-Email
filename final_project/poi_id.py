@@ -11,7 +11,7 @@ from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
 from data_exploration import initial_data_exploration, plot_data_exploration, \
         find_oulier, find_person_missing_features
-from feature_creation import create_feature
+from feature_creation import create_feature, best_features
 
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
@@ -71,12 +71,10 @@ with open("final_project_dataset.pkl", "rb") as data_file:
 #find_person_missing_features(data_dict)
 # Noted that 'LOCKHART EUGENE E' has less than 10% features filled
 
-
 # From above exploration, it was deiced to remove the following persons from 
 # the data : 'TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E'
 for key in ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']:
     data_dict.pop(key,0)
-
 
 
 ### Task 3: Create new feature(s)
@@ -86,18 +84,20 @@ for key in ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']:
 # "fraction_to_poi" is "from_this_person_to_poi"/"to_messages"      
 create_feature(data_dict)
 
-# Update "fraction_from_poi" and "fraction_to_poi" to this list
+# Update "fraction_from_poi" and "fraction_to_poi" to "all_features_list"
 all_features_list += ["fraction_from_poi", "fraction_to_poi"]
 
+# Select 10 best features using SelectKBest
+best_features_and_scores = best_features(data_dict, all_features_list, 10)
+
+# Update "my_features_list" with "poi" and the best 10 features
+my_features_list = poi_label + list (best_features_and_scores.keys())
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
-
-
-
 ### Extract features and labels from dataset for local testing
-data = featureFormat(my_dataset, features_list, sort_keys = True)
+data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
 ### Task 4: Try a varity of classifiers
