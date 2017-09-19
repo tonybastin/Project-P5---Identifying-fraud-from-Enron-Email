@@ -9,6 +9,8 @@ sys.path.append("../tools/")
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
+from data_exploration import initial_data_exploration, plot_data_exploration, \
+        find_oulier, find_person_missing_features
 
 
 ### Task 1: Select what features you'll use.
@@ -38,8 +40,45 @@ all_features_list = poi_label + financial_features + email_features
 with open("final_project_dataset.pkl", "rb") as data_file:
     data_dict = pickle.load(data_file)
     
-    
+ 
 ### Task 2: Remove outliers
+
+# See "final_project/data_exploration.py" for functions for initial data 
+# exploration, make scatter plots and finding outliers etc.
+
+# Untag below to print out names, POI's and their numbers 
+#initial_data_exploration(data_dict)  
+# Noted unsual names "TOTAL" and "THE TRAVEL AGENCY IN THE PARK" in the name list
+
+# Untag below to make scatter plots for 'bonus' vs 'salary' 
+#plot_data_exploration(data_dict,'bonus' , 'salary')
+# Noted a person with salary greater than 1e7 which is a big oulier
+#find_oulier(data_dict, "salary", 1e7)
+# Noted that the outlier is "TOTAL"
+
+# Untag below to make scatter plots for 
+#'from_poi_to_this_person' vs 'from_this_person_to_poi' 
+#plot_data_exploration(data_dict,'from_poi_to_this_person', \
+#                      'from_this_person_to_poi' )
+# Noted a person wih 'from_poi_to_this_person' emails greater than 500
+#find_oulier(data_dict, 'from_poi_to_this_person', 500)
+# Noted nothing wrong with 'LAVORATO JOHN J'
+# Noted a POI wih 'from_this_person_to_poi' emails greater than 500
+#find_oulier(data_dict, 'from_this_person_to_poi', 500)
+# Noted nothing wrong with 'DELAINEY DAVID W'
+
+# Untag below to find if any person have less than 10% features filled
+#find_person_missing_features(data_dict)
+# Noted that 'LOCKHART EUGENE E' has less than 10% features filled
+
+
+# From above exploration, it was deiced to remove the following persons from 
+# the data : 'TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E'
+for key in ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'LOCKHART EUGENE E']:
+    data_dict.pop(key,0)
+
+
+
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
