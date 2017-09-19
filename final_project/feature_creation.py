@@ -47,7 +47,7 @@ def best_features(data_dict, features_list, k):
     """
     from feature_format import featureFormat, targetFeatureSplit
     from sklearn.feature_selection import SelectKBest
-    
+    import operator
     data = featureFormat(data_dict, features_list)
     labels, features = targetFeatureSplit(data)
 
@@ -57,7 +57,14 @@ def best_features(data_dict, features_list, k):
     unsorted_pairs = zip(features_list[1:], scores)
     sorted_pairs = list(reversed(sorted(unsorted_pairs, key=lambda x: x[1])))
     best_k_features = dict(sorted_pairs[:k])
-    print ("Best {} features and their scores:  ".format(k))
-    for feature,value in best_k_features.items():
-        print("{} : {}".format(feature, round(value,2)))    
+    print ("")
+    print ("Best {} features and their scores:  \n".format(k))
+    sorted_features = sorted(best_k_features.items(), \
+                             key=operator.itemgetter(1), reverse=True)
+    num = 1
+    for value in sorted_features:
+        print("{}) {} : {}".format(num, value[0], round(value[1],2)))
+        num += 1
+    #for feature,value in best_k_features.items():
+    #    print("{} : {}".format(feature, round(value,2)))    
     return best_k_features

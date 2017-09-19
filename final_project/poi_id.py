@@ -87,7 +87,7 @@ create_feature(data_dict)
 # Update "fraction_from_poi" and "fraction_to_poi" to "all_features_list"
 all_features_list += ["fraction_from_poi", "fraction_to_poi"]
 
-# Select 10 best features using SelectKBest
+# Select, print and store 10 best features using SelectKBest
 best_features_and_scores = best_features(data_dict, all_features_list, 10)
 
 # Update "my_features_list" with "poi" and the best 10 features
@@ -99,6 +99,11 @@ my_dataset = data_dict
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+
+# Scale features using standard scaler
+from sklearn.preprocessing  import StandardScaler
+scaler = StandardScaler()
+features = scaler.fit_transform(features)
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
