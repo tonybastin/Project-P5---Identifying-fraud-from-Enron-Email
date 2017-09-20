@@ -8,11 +8,12 @@ import pprint
 sys.path.append("../tools/")
 
 from feature_format import featureFormat, targetFeatureSplit
-from tester import dump_classifier_and_data
+from tester import dump_classifier_and_data, test_classifier
 from data_exploration import initial_data_exploration, plot_data_exploration, \
         find_oulier, find_person_missing_features
 from feature_creation import create_feature, best_features
-
+from estimator_finder_evaluator import best_estimator_finder, \
+        estimator_evaluator
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
@@ -100,10 +101,7 @@ my_dataset = data_dict
 data = featureFormat(my_dataset, my_features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
-# Scale features using standard scaler
-from sklearn.preprocessing  import StandardScaler
-scaler = StandardScaler()
-features = scaler.fit_transform(features)
+
 
 ### Task 4: Try a varity of classifiers
 ### Please name your classifier clf for easy export below.
@@ -111,9 +109,31 @@ features = scaler.fit_transform(features)
 ### you'll need to use Pipelines. For more info:
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
-# Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+# Scale features using standard scaler
+from sklearn.preprocessing  import StandardScaler
+scaler = StandardScaler()
+features = scaler.fit_transform(features)
+
+# Logistic regression
+from sklearn.linear_model import LogisticRegression
+parameters_log = {'C': [0.05, 0.5, 1, 5, 10, 10**2, 500, 10**3, 10**5],
+              'tol':[10**-1, 10**-2, 10**-4, 10**-5],
+              'class_weight':['balanced'] } 
+clf_log = LogisticRegression()        
+        
+# Decision tree classifier
+from sklearn import tree
+parameters_dt = {'criterion': ['gini', 'entropy'], 
+                        'min_samples_split': [10,15,20,25,50]}
+clf_dt = tree.DecisionTreeClassifier()
+
+# Support vector classifier
+from sklearn.svm import SVC
+parameters_svc = {'kernel': ['linear', 'poly', 'rbf'],
+                  'C' : [1, 10, 50, 100],
+                  'gamma' : [10**-1, 10**-2, 10**-4, 10**-5]} 
+clf_svc = SVC()
+
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -122,11 +142,25 @@ clf = GaussianNB()
 ### stratified shuffle split cross validation. For more info: 
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-# Example starting point. Try investigating other evaluation techniques!
-from sklearn.cross_validation import train_test_split
-features_train, features_test, labels_train, labels_test = \
-    train_test_split(features, labels, test_size=0.3, random_state=42)
+# Logistic regression
+#best_estimator_finder(clf_log, parameters_log, features, labels)
+clf_log = LogisticRegression(C = 0.5, class_weight = 'balanced', tol= 0.1)
+estimator_evaluator(clf_log, features, labels, 1000 )
+test_classifier(clf_log, my_dataset, my_features_list, folds = 1000)
 
+
+# Decision tree classifier
+#best_estimator_finder(clf_dt, parameters_dt, features, labels)
+clf_dt = tree.DecisionTreeClassifier(criterion = 'entropy', min_samples_split= 15)
+estimator_evaluator(clf_dt, features, labels, 1000 )
+test_classifier(clf_dt, my_dataset, my_features_list, folds = 1000)
+
+# Support vector classifier
+#best_estimator_finder(clf_svc, parameters_svc, features, labels)
+clf_svc = SVC(C = 1, gamma = 0.1, kernel = 'linear')
+estimator_evaluator(clf_svc, features, labels, 1000 )
+test_classifier(clf_svc, my_dataset, my_features_list, folds = 1000)
+    
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
