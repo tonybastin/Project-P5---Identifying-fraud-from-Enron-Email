@@ -92,7 +92,7 @@ create_feature(data_dict)
 all_features_list += ["fraction_from_poi", "fraction_to_poi"]
 
 # Select, print and store 10 best features using SelectKBest
-best_features_and_scores = best_features(data_dict, all_features_list, 17)
+best_features_and_scores = best_features(data_dict, all_features_list, 15)
 
 # Update "my_features_list" with "poi" and the best 10 features
 my_features_list = poi_label + list (best_features_and_scores.keys()) 
@@ -163,5 +163,5 @@ test_classifier(clf_dt, my_dataset, my_features_list, folds = 1000)
 ### generates the necessary .pkl files for validating your results.
 
 
-clf = clf_dt
+clf = clf_log
 dump_classifier_and_data(clf, my_dataset, my_features_list)
