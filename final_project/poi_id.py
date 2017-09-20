@@ -1,4 +1,7 @@
 #!/usr/bin/python
+import os
+os.chdir('C:\\Users\\TONY BASTIN\\Google Drive\\Udacity\\P8 ML\\Project P5 - Identifying fraud from Enron Email\\final_project')
+os.getcwd()
 
 import sys
 import pickle
@@ -89,10 +92,11 @@ create_feature(data_dict)
 all_features_list += ["fraction_from_poi", "fraction_to_poi"]
 
 # Select, print and store 10 best features using SelectKBest
-best_features_and_scores = best_features(data_dict, all_features_list, 10)
+best_features_and_scores = best_features(data_dict, all_features_list, 17)
 
 # Update "my_features_list" with "poi" and the best 10 features
-my_features_list = poi_label + list (best_features_and_scores.keys())
+my_features_list = poi_label + list (best_features_and_scores.keys()) 
+                  # + ["fraction_from_poi"]
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
@@ -110,8 +114,8 @@ labels, features = targetFeatureSplit(data)
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Scale features using standard scaler
-from sklearn.preprocessing  import StandardScaler
-scaler = StandardScaler()
+from sklearn.preprocessing  import MinMaxScaler
+scaler = MinMaxScaler()
 features = scaler.fit_transform(features)
 
 # Logistic regression
@@ -127,13 +131,6 @@ parameters_dt = {'criterion': ['gini', 'entropy'],
                         'min_samples_split': [10,15,20,25,50]}
 clf_dt = tree.DecisionTreeClassifier()
 
-# Support vector classifier
-from sklearn.svm import SVC
-parameters_svc = {'kernel': ['linear', 'poly', 'rbf'],
-                  'C' : [1, 10, 50, 100],
-                  'gamma' : [10**-1, 10**-2, 10**-4, 10**-5]} 
-clf_svc = SVC()
-
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -143,27 +140,28 @@ clf_svc = SVC()
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Logistic regression
-#best_estimator_finder(clf_log, parameters_log, features, labels)
-clf_log = LogisticRegression(C = 0.5, class_weight = 'balanced', tol= 0.1)
-estimator_evaluator(clf_log, features, labels, 1000 )
-test_classifier(clf_log, my_dataset, my_features_list, folds = 1000)
 
+# Untag below to check for best parameters using GridSearchCV()
+#best_estimator_finder(clf_log, parameters_log, features, labels)
+#clf_log = LogisticRegression(C = 0.05, class_weight = 'balanced', tol= 0.1)
+#estimator_evaluator(clf_log, features, labels, 1000 )
+from sklearn.pipeline import Pipeline
+clf_log = Pipeline(steps=[("scaler", scaler),
+                      ("clf", LogisticRegression(C = 0.05, class_weight = 'balanced', tol= 0.1))])
+test_classifier(clf_log, my_dataset, my_features_list, folds = 1000)
 
 # Decision tree classifier
 #best_estimator_finder(clf_dt, parameters_dt, features, labels)
-clf_dt = tree.DecisionTreeClassifier(criterion = 'entropy', min_samples_split= 15)
-estimator_evaluator(clf_dt, features, labels, 1000 )
+clf_dt = tree.DecisionTreeClassifier(criterion = 'entropy', min_samples_split= 10)
+#estimator_evaluator(clf_dt, features, labels, 1000 )
 test_classifier(clf_dt, my_dataset, my_features_list, folds = 1000)
 
-# Support vector classifier
-#best_estimator_finder(clf_svc, parameters_svc, features, labels)
-clf_svc = SVC(C = 1, gamma = 0.1, kernel = 'linear')
-estimator_evaluator(clf_svc, features, labels, 1000 )
-test_classifier(clf_svc, my_dataset, my_features_list, folds = 1000)
     
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
 
-dump_classifier_and_data(clf, my_dataset, features_list)
+
+clf = clf_dt
+dump_classifier_and_data(clf, my_dataset, my_features_list)

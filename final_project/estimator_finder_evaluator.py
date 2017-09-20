@@ -7,11 +7,13 @@ def best_estimator_finder(clf, parameters, features, labels):
     features_train, features_test, labels_train, labels_test = \
         train_test_split(features, labels, test_size=0.3, random_state=42) 
     
-    clf_grid = GridSearchCV(clf, parameters)
+    clf_grid = GridSearchCV(clf, parameters, scoring = 'precision') # , 'recall'
     clf_grid.fit(features_train, labels_train)
 
-    #clf.best_score_
-    #clf.grid_scores_ 
+    print ("Best estimator : ",clf_grid.best_score_)
+    print ("Best estimator values : ",clf_grid.best_params_)
+    #print ("Estimator grid: ",clf_grid.grid_scores_) 
+    
     return (clf_grid.best_params_)
                 
     
