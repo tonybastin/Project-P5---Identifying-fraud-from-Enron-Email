@@ -45,7 +45,7 @@ def plot_data_exploration(data_dict, x_label , y_label):
     
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.show()
+    #plt.show()
     plt.savefig(x_label + ' Vs ' + y_label + '.png')        
     
 # Check for outliers
