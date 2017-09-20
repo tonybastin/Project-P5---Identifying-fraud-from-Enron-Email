@@ -99,3 +99,10 @@ The  evaluation matrix for the 2 best algorithms are as listed below :
 | Decision Tree| 0.4020   | 0.3425 |
 
 For the logistic regression prediction is 32% that is out of all items that are truly positive, 32% are correctly classified as positive. A high precision means POIs identified by an algorithm tended to be correct. Recall of 74% means that out of all items  predicted as positive, 74% are truly belong to positive case. In this case, a high recall means if there are POIs in the datset, an algorithm has good chance to identify them.
+
+### References:
+https://matplotlib.org/devdocs/index.html
+https://www.tutorialspoint.com/python/
+https://stackoverflow.com/questions/41885743/skip-to-next-item-in-dictionary
+http://zacstewart.com/2014/08/05/pipelines-of-featureunions-of-pipelines.html
+https://classroom.udacity.com/
