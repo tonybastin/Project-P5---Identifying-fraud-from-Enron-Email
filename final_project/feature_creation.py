@@ -62,9 +62,33 @@ def best_features(data_dict, features_list, k):
     sorted_features = sorted(best_k_features.items(), \
                              key=operator.itemgetter(1), reverse=True)
     num = 1
+    x =[]
+    y =[]
     for value in sorted_features:
         print("{}) {} : {}".format(num, value[0], round(value[1],2)))
+        x.append(value[0])
+        y.append(round(value[1],2))
         num += 1
+    
+    
+    def feature_plot(x,y):
+        print (x)
+        print (y)
+        plt.style.use('ggplot')
+        x_pos = np.arange(len(x))
+        plt.bar(x_pos, y, align='center', alpha=0.5)
+        plt.xticks(x_pos, x)
+        plt.xlabel('Feature')  
+        plt.ylabel('Score')
+        plt.title('Features and Scores')
+        plt.setp(plt.gca().get_xticklabels(), rotation=90, horizontalalignment='right')
+        #plt.show()
+        plt.autoscale()
+        plt.savefig('Features and Scores.jpg', dpi=600, bbox_inches="tight")
+    
+    if k == 17:
+        feature_plot(x,y)    
+    
     #for feature,value in best_k_features.items():
     #    print("{} : {}".format(feature, round(value,2)))    
     return best_k_features

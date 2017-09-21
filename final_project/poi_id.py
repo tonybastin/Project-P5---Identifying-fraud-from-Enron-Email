@@ -92,7 +92,7 @@ create_feature(data_dict)
 all_features_list += ["fraction_from_poi", "fraction_to_poi"]
 
 # Select, print and store 10 best features using SelectKBest
-best_features_and_scores = best_features(data_dict, all_features_list, 15)
+best_features_and_scores = best_features(data_dict, all_features_list, 17)
 
 # Update "my_features_list" with "poi" and the best 10 features
 my_features_list = poi_label + list (best_features_and_scores.keys()) 
@@ -128,7 +128,7 @@ clf_log = LogisticRegression()
 # Decision tree classifier
 from sklearn import tree
 parameters_dt = {'criterion': ['gini', 'entropy'], 
-                        'min_samples_split': [10,15,20,25,50]}
+                        'min_samples_split': [2,5,8,10,15,20,25,50]}
 clf_dt = tree.DecisionTreeClassifier()
 
 
@@ -142,17 +142,17 @@ clf_dt = tree.DecisionTreeClassifier()
 # Logistic regression
 
 # Untag below to check for best parameters using GridSearchCV()
-#best_estimator_finder(clf_log, parameters_log, features, labels)
+best_estimator_finder(clf_log, parameters_log, features, labels)
 #clf_log = LogisticRegression(C = 0.05, class_weight = 'balanced', tol= 0.1)
 #estimator_evaluator(clf_log, features, labels, 1000 )
 from sklearn.pipeline import Pipeline
 clf_log = Pipeline(steps=[("scaler", scaler),
-                      ("clf", LogisticRegression(C = 0.05, class_weight = 'balanced', tol= 0.1))])
+                      ("clf", LogisticRegression(C = 5, class_weight = 'balanced', tol= 0.1))])
 test_classifier(clf_log, my_dataset, my_features_list, folds = 1000)
 
 # Decision tree classifier
-#best_estimator_finder(clf_dt, parameters_dt, features, labels)
-clf_dt = tree.DecisionTreeClassifier(criterion = 'entropy', min_samples_split= 10)
+best_estimator_finder(clf_dt, parameters_dt, features, labels)
+clf_dt = tree.DecisionTreeClassifier(criterion = 'entropy', min_samples_split= 8)
 #estimator_evaluator(clf_dt, features, labels, 1000 )
 test_classifier(clf_dt, my_dataset, my_features_list, folds = 1000)
 

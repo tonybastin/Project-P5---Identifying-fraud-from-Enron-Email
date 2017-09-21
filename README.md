@@ -56,6 +56,9 @@ After that I used the SelectKBest to select 15 best features based on their scor
 |16)| from_this_person_to_poi   | 2.38 |
 |17)| director_fees             | 2.13 |
 
+![alt text](https://github.com/tonybastin/Project-P5---Identifying-fraud-from-Enron-Email/blob/master/final_project/data_exploration.py "Logo Title Text 1")
+
+
 After selecting the 15 best features, the features were scaled using the MinMaxScaler() before selecting and tuning the machine learning algorithms.
 
 ### 3) What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
