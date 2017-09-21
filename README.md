@@ -32,7 +32,7 @@ I used the following techniques to identify the outliers:
 
 ### 2) What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
 
-Two new features were introduced into the dataset : 1) to_poi_ratio: ratio of total emails to a POI to total emails 2) from_poi_ratio: ratio of total emails from a POI to total emails. The rationale for addition of these features is that persons who interacted with POI’s at higher rate may be colluding with those POIs to commit fraud and therefore be POIs themselves.
+Two new features were introduced into the dataset : 1) "fraction_to_poi": ratio of total emails to a POI to total emails 2) "fraction_from_poi": ratio of total emails from a POI to total emails. The rationale for addition of these features is that persons who interacted with POI’s at higher rate may be colluding with those POIs to commit fraud and therefore be POIs themselves.
 
 After that I used the SelectKBest to select 15 best features based on their scores as given below :  
 
@@ -56,10 +56,15 @@ After that I used the SelectKBest to select 15 best features based on their scor
 |16)| from_this_person_to_poi   | 2.38 |
 |17)| director_fees             | 2.13 |
 
-![alt text](https://github.com/tonybastin/Project-P5---Identifying-fraud-from-Enron-Email/blob/master/final_project/data_exploration.py "Logo Title Text 1")
+After looking in the above table, it is seen that the newly introduced feature "fraction_to_poi" has obtained the fifth position in the table with a score of 16.41 and "fraction_from_poi" has 15th position with a score of 3.15. Thus it shows that "fraction_to_poi" will have a significant effect on the prediction model when compared to the other features which was already there in the dataset.
 
+A bar chart of the above table is given below:
 
-After selecting the 15 best features, the features were scaled using the MinMaxScaler() before selecting and tuning the machine learning algorithms.
+![](https://github.com/tonybastin/Project-P5---Identifying-fraud-from-Enron-Email/blob/master/final_project/Features%20and%20Scores.jpg?raw=true  "Logo Title Text 1")
+
+After looking through the above bar chart, there was a big dip in the feature score after the fifth feature showing the importance of these 5 features and hence the first 5 features with best scores were chosen for building the machine learning model.
+
+After selecting the 5 best features, the features were scaled using the MinMaxScaler() before selecting and tuning the machine learning algorithms.
 
 ### 3) What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 
@@ -67,8 +72,8 @@ I tried the following algorithms - Naive Bayes classifier, Random Forest classif
 
 | Model | Precision   | Recall|
 |---|---------------------------|-------|
-| Logistic Regression| 0.3259   | 0.7380 |
-| Decision Tree| 0.4020   | 0.3425 |
+| Logistic Regression| 0.352   | 0.669 |
+| Decision Tree| 0.335   | 0.343 |
 
 ### 4) What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
 
@@ -83,14 +88,11 @@ The parameters tuned are as listed below:
 
 ### 5) What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric items: “discuss validation”, “validation strategy”]
 
-In machine learning, model validation is referred to as the process where a trained model is evaluated with a testing data set. The testing data set is a separate portion of the same data set from which the training set is derived. The common evaluation parameters are :
-* Precision : Out of all items that are truly positive, how many are correctly classified as positive. It is calculated as (TP)/(TP + FP).
-
-* Recall : Out of all items are predicted as positive, how many are truly belong to positive case. It is calculated as (TP)/(TP + FN).
+In machine learning, model validation is referred to as the process where a trained model is evaluated with a testing data set. The testing data set is a separate portion of the same data set from which the training set is derived. The common evaluation parameters are Precision and Recall.
 
 The  classic mistake is overfitting where you train the algorithm on all available data instead of splitting it into training and testing data. Overfitting causing the model to merely memorize classification and not 'learn' to generalize and apply this information to new datasets.
 
-The final model was validated using the test_classifier() given by Udacity. It initially splits the dataset into training and test set in the ratio 0.7:0.3 and used Stratified Shuffle Split cross validation iterator to randomly create multiple train test sets of data.
+The final model was validated using the [estimator_evaluator()](https://github.com/tonybastin/Project-P5---Identifying-fraud-from-Enron-Email/blob/master/final_project/estimator_finder_evaluator.py). It uses a loop to iterate num_iter times (used num_iter = 1000 ) splitting the dataset into training and test set in the ratio 0.7:0.3 using train_test_split, and making predictions the accuracy, precision & recall using sklearn.metrics. The average values are reported here.
 
 ### 6) Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
 
@@ -98,10 +100,10 @@ The  evaluation matrix for the 2 best algorithms are as listed below :
 
 | Model | Precision   | Recall|
 |---|---------------------------|-------|
-| Logistic Regression| 0.3259   | 0.7380 |
-| Decision Tree| 0.4020   | 0.3425 |
+| Logistic Regression| 0.352   | 0.669 |
+| Decision Tree| 0.335   | 0.343 |
 
-For the logistic regression prediction is 32% that is out of all items that are truly positive, 32% are correctly classified as positive. A high precision means POIs identified by an algorithm tended to be correct. Recall of 74% means that out of all items  predicted as positive, 74% are truly belong to positive case. In this case, a high recall means if there are POIs in the datset, an algorithm has good chance to identify them.
+For the logistic regression prediction is 32% that is out of all items that are predicted by the model as correct, 35% are correct. A high precision means POIs identified by an algorithm tended to be correct. Recall of 67% means that out of all items  predicted correctly, 67% are truly correct. In this case, a high recall means if there are POIs in the dataset, an algorithm has good chance to identify them.
 
 ### References:
 https://matplotlib.org/devdocs/index.html
