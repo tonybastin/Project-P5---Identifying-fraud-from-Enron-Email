@@ -32,7 +32,7 @@ financial_features = ['salary', 'deferral_payments', 'total_payments',
                       'long_term_incentive', 'restricted_stock',
                       'director_fees'] 
 
-# Units are generally number of emails messages; ‘email_address’ is removed
+# Units are generally number of emails messages email_address is removed
 email_features = ['to_messages', 'from_poi_to_this_person',
                   'from_messages', 'from_this_person_to_poi',
                   'shared_receipt_with_poi'] 
